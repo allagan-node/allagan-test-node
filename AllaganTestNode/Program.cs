@@ -18,7 +18,19 @@ namespace AllaganTestNode
             while (true)
             {
                 PrintScreen();
-                Console.ReadLine();
+
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int _input) && _input > 0 && _input <= 6)
+                {
+
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("");
+                }
             }
         }
 
@@ -27,18 +39,42 @@ namespace AllaganTestNode
             Console.Clear();
 
             Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(string.Format("Allagan Test Node v{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
             Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(string.Format("Allagan Test Node v{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Pick an operation to execute:");
-            Console.WriteLine(string.Format("[1] - Pick source file: {0}", string.IsNullOrEmpty(sourceIndexPath) ? "NOT SELECTED" : sourceIndexPath));
-            Console.WriteLine(string.Format("[2] - Pick source language code: {0}", sourceLanguage == ExHLanguage.Null ? "NOT SELECTED" : sourceLanguage.ToString()));
-            Console.WriteLine(string.Format("[3] - Pick target file: {0}", string.IsNullOrEmpty(targetIndexPath) ? "NOT SELECTED" : targetIndexPath));
-            Console.WriteLine(string.Format("[4] - Pick target language code: {0}", targetLanguage == ExHLanguage.Null ? "NOT SELECTED" : targetLanguage.ToString()));
-            Console.WriteLine(string.Format("[5] - Back up target file?: {0}", backUpTarget.ToString()));
 
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("[1] - Pick source file: ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(string.IsNullOrEmpty(sourceIndexPath) ? "NOT SELECTED" : sourceIndexPath);
 
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("[2] - Pick source language code: ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(sourceLanguage == ExHLanguage.Null ? "NOT SELECTED" : sourceLanguage.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("[3] - Pick target file: ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(string.IsNullOrEmpty(targetIndexPath) ? "NOT SELECTED" : targetIndexPath);
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("[4] - Pick target language code: ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(targetLanguage == ExHLanguage.Null ? "NOT SELECTED" : targetLanguage.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("[5] - Back up target file?: ");
+            Console.ForegroundColor = backUpTarget ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed;
+            Console.WriteLine(backUpTarget.ToString().ToUpper());
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("[6] - Build with above settings.");
+
+            Console.WriteLine();
+            Console.Write("Choose an option: ");
         }
     }
 }
