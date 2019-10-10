@@ -9,9 +9,11 @@ namespace AllaganTestNode
     {
         private static string sourceIndexPath = string.Empty;
         private static ExHLanguage sourceLanguage = ExHLanguage.Null;
+        private static IndexFile sourceIndex = new IndexFile();
 
         private static string targetIndexPath = string.Empty;
         private static ExHLanguage targetLanguage = ExHLanguage.Null;
+        private static IndexFile targetIndex = new IndexFile();
 
         private static bool backUpTarget = true;
 
@@ -33,13 +35,13 @@ namespace AllaganTestNode
                             PickPath(ref sourceIndexPath, "READ from");
                             break;
                         case 2:
-                            PickLanguageCode(sourceIndexPath, ref sourceLanguage);
+                            PickLanguageCode(sourceIndexPath, ref sourceLanguage, sourceIndex);
                             break;
                         case 3:
                             PickPath(ref targetIndexPath, "WRITE to");
                             break;
                         case 4:
-                            PickLanguageCode(targetIndexPath, ref targetLanguage);
+                            PickLanguageCode(targetIndexPath, ref targetLanguage, targetIndex);
                             break;
                         case 5:
                             break;
@@ -50,10 +52,26 @@ namespace AllaganTestNode
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("Input is invalid. Press ENTER to continue.");
+                    Console.WriteLine("Input is invalid. Press ENTER to continue...");
                     Console.ReadLine();
                 }
             }
+        }
+
+        private static string lastLine;
+        public static void Report(string line)
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            if (!string.IsNullOrEmpty(lastLine))
+            {
+                string cleanLine = string.Empty;
+                while (cleanLine.Length != lastLine.Length) cleanLine += " ";
+                Console.Write(cleanLine + "\r");
+            }
+
+            Console.Write(line + "\r");
+            lastLine = line;
         }
 
         static void PrintScreen()
@@ -147,15 +165,21 @@ namespace AllaganTestNode
             }
         }
 
-        static void PickLanguageCode(string path, ref ExHLanguage language)
+        static void PickLanguageCode(string path, ref ExHLanguage language, IndexFile indexFile)
         {
-            Console.Clear();
-            Console.WriteLine();
+            try
+            {
+                Console.Clear();
+                Console.WriteLine();
 
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) throw new Exception("Specified index file path is incorrect. Please make sure you selected a file first!");
+                
+                indexFile.Load(path);
+            }
+            catch (Exception e)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Specified index file path is incorrect. Please make sure you selected a file first!");
+                Console.WriteLine(e.Message);
                 Console.WriteLine();
 
                 Console.ForegroundColor = ConsoleColor.Gray;
