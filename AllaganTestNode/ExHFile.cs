@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace AllaganTestNode
 {
@@ -34,6 +35,12 @@ namespace AllaganTestNode
         public ExHColumn[] Columns { get; set; }
         public ExHRange[] Ranges { get; set; }
         public ExHLanguage[] Languages { get; set; }
+        public List<ExDFile> ExDs { get; set; }
+
+        public ExHFile()
+        {
+            ExDs = new List<ExDFile>();
+        }
 
         public void ProcessSheetName(string line)
         {

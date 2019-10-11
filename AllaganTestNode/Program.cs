@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -33,19 +35,15 @@ namespace AllaganTestNode
                     {
                         case 1:
                             PickPath(ref sourceIndexPath, "READ from");
-                            break;
-                        case 2:
                             PickLanguageCode(sourceIndexPath, ref sourceLanguage, sourceIndex);
                             break;
-                        case 3:
+                        case 2:
                             PickPath(ref targetIndexPath, "WRITE to");
-                            break;
-                        case 4:
                             PickLanguageCode(targetIndexPath, ref targetLanguage, targetIndex);
                             break;
-                        case 5:
+                        case 3:
                             break;
-                        case 6:
+                        case 4:
                             break;
                     }
                 }
@@ -89,46 +87,40 @@ namespace AllaganTestNode
             bool isBuildable = true;
 
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("[1] - Pick source file");
+            Console.WriteLine("[1] - Pick source file and language code");
             Console.Write("-> ");
             isBuildable &= !string.IsNullOrEmpty(sourceIndexPath);
             Console.ForegroundColor = string.IsNullOrEmpty(sourceIndexPath) ? ConsoleColor.DarkRed : ConsoleColor.DarkGreen;
-            Console.WriteLine(string.IsNullOrEmpty(sourceIndexPath) ? "NOT SELECTED" : sourceIndexPath);
-            Console.WriteLine();
-
+            Console.WriteLine(string.IsNullOrEmpty(sourceIndexPath) ? "FILE NOT SELECTED" : sourceIndexPath);
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("[2] - Pick source language code");
             Console.Write("-> ");
             isBuildable &= sourceLanguage != ExHLanguage.Null;
             Console.ForegroundColor = sourceLanguage == ExHLanguage.Null ? ConsoleColor.DarkRed : ConsoleColor.DarkGreen;
-            Console.WriteLine(sourceLanguage == ExHLanguage.Null ? "NOT SELECTED" : sourceLanguage.ToString());
+            Console.WriteLine(sourceLanguage == ExHLanguage.Null ? "LANG NOT SELECTED" : sourceLanguage.ToString());
             Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("[3] - Pick target file");
+            Console.WriteLine("[2] - Pick target file and language code");
             Console.Write("-> ");
             isBuildable &= !string.IsNullOrEmpty(targetIndexPath);
             Console.ForegroundColor = string.IsNullOrEmpty(targetIndexPath) ? ConsoleColor.DarkRed : ConsoleColor.DarkGreen;
-            Console.WriteLine(string.IsNullOrEmpty(targetIndexPath) ? "NOT SELECTED" : targetIndexPath);
-            Console.WriteLine();
-
+            Console.WriteLine(string.IsNullOrEmpty(targetIndexPath) ? "FILE NOT SELECTED" : targetIndexPath);
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("[4] - Pick target language code");
             Console.Write("-> ");
             isBuildable &= targetLanguage != ExHLanguage.Null;
             Console.ForegroundColor = targetLanguage == ExHLanguage.Null ? ConsoleColor.DarkRed : ConsoleColor.DarkGreen;
-            Console.WriteLine(targetLanguage == ExHLanguage.Null ? "NOT SELECTED" : targetLanguage.ToString());
+            Console.WriteLine(targetLanguage == ExHLanguage.Null ? "LANG NOT SELECTED" : targetLanguage.ToString());
             Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("[5] - Back up target file?");
+            Console.WriteLine("[3] - Back up target file?");
             Console.Write("-> ");
             Console.ForegroundColor = backUpTarget ? ConsoleColor.DarkGreen : ConsoleColor.Gray;
             Console.WriteLine(backUpTarget ? "YES" : "NO");
             Console.WriteLine();
 
             Console.ForegroundColor = isBuildable ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed;
-            Console.WriteLine("[6] - Build with above settings.");
+            Console.WriteLine("[4] - Build with above settings.");
             Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -174,7 +166,31 @@ namespace AllaganTestNode
 
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) throw new Exception("Specified index file path is incorrect. Please make sure you selected a file first!");
                 
-                indexFile.Load(path);
+                Dictionary<ExHLanguage, bool> availableLanguages = indexFile.Load(path);
+                ExHLanguage[] availableLanguagesArray = availableLanguages.Keys.ToArray();
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+                    for (int i = 0; i < availableLanguagesArray.Length; i++)
+                    {
+                        Console.WriteLine(string.Format("[{0}] - {1}", i.ToString(), availableLanguagesArray[i].ToString()));
+                    }
+
+                    Console.Write("Pick the language code: ");
+                    string input = Console.ReadLine();
+
+                    if (!int.TryParse(input, out int _input)) continue;
+                    if (_input < 0 || _input >= availableLanguagesArray.Length) continue;
+
+                    language = availableLanguagesArray[_input];
+
+                    return;
+                }
             }
             catch (Exception e)
             {
